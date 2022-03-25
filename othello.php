@@ -180,6 +180,33 @@ class Othello {
     function change_turn() {
         $this->turn = self::BLACK + self::WHITE - $this->turn;
     }
+
+    // 置ける場所があるか
+    function can_put_piece_anywhere() {
+        for ($y = 0; $y < self::HEIGHT; $y++) {
+            for ($x = 0; $x < self::WIDTH; $x++) {
+                if ($this->can_put_piece($y, $x))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    function finish_game() {
+        $black = 0;
+        $white = 0;
+        foreach ($this->board as $arr) {
+            $output = array_count_values($arr);
+            $black += $output[self::BLACK];
+            $white += $output[self::WHITE];
+        }
+        if ($black > $white)
+            echo "'".$this->piece[self::BLACK]."' win.\n";
+        else if ($black < $white)
+            echo "'".$this->piece[self::WHITE]."' win.\n";
+        else
+            echo "draw.\n";
+    }
 }
 
 function main() {
@@ -188,6 +215,17 @@ function main() {
     while (true) {
         // 盤面出力
         $game->print_board();
+
+        // 両プレイヤーとも置けないなら終了
+        if (!$game->can_put_piece_anywhere()) {
+            $game->change_turn();
+            if (!$game->can_put_piece_anywhere()) {
+                $game->finish_game();
+                exit(0);
+            }
+        }
+
+        // ターン表示
         $game->print_turn();
 
         // ユーザー入力
