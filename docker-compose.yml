@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  php:
+    image: php
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
